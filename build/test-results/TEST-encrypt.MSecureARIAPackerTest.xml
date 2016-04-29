@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="encrypt.MSecureARIAPackerTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2016-04-26T04:39:18" hostname="JangHyeongGon" time="36.375">
+  <properties/>
+  <testcase name="firstTestFileToFile" classname="encrypt.MSecureARIAPackerTest" time="10.24"/>
+  <testcase name="secondTestBigFile" classname="encrypt.MSecureARIAPackerTest" time="19.712"/>
+  <testcase name="testAddPKC5Padding" classname="encrypt.MSecureARIAPackerTest" time="0.0"/>
+  <testcase name="testDelPKC5Padding" classname="encrypt.MSecureARIAPackerTest" time="0.0"/>
+  <testcase name="testEncryptCorrectBig" classname="encrypt.MSecureARIAPackerTest" time="6.414"/>
+  <testcase name="testEncrypteCorrectDefault" classname="encrypt.MSecureARIAPackerTest" time="0.004"/>
+  <testcase name="testIsDexFile" classname="encrypt.MSecureARIAPackerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
