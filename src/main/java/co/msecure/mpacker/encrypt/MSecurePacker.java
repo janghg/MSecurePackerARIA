@@ -31,6 +31,13 @@ public class MSecurePacker {
 		String[] randomChar = new String[64];
 		String randomKey = "";
 		
+		if (args.length < 2) {
+			System.err.println("[USAGE] [original dexfile path] [1:encryption or 2:decryption] [if decryption: key file path]");
+			System.err.println("ex) \"a.dex\" 1");
+			System.err.println("    \"b.dex\" 2 \"~.txt\"");
+			System.exit(1);
+		} 
+		
 		//arguments 
 		String originFullPath = args[0];
 		int selectEncDec = Integer.valueOf(args[1]);	// select encrypt or decrypt
@@ -51,11 +58,6 @@ public class MSecurePacker {
 			randomKey = br.readLine();
 		}
 		
-		if (args.length < 2) {
-			System.err.println("[USAGE] [original dexfile path] [1:encryption or 2:decryption]");
-			System.err.println("ex) \"a.dex\" 1");
-			System.exit(1);
-		} 
 		
 
 		File origin = new File(originFullPath);
@@ -77,12 +79,11 @@ public class MSecurePacker {
 			System.err.println("Directory creation fail");
 		}
 		
-		//옵션줘서 encrypt , decrypt
+		// 1 : encrypt , 2 : decrypt
 		if (selectEncDec == 1) {
 			String targetFullPath = timestamp + "/EncryptedClasses.dex";
 			File target = new File(targetFullPath);	
 			packer.encryptFileToFile(origin, target);		
-			//packer.decryptFileToFile(target, new File(timestamp + "/b.txt"));
 			
 			//key값 출력
 			BufferedWriter output = new BufferedWriter(new FileWriter(timestamp + "/key_value.txt"));
