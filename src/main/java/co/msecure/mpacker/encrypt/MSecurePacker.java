@@ -32,9 +32,9 @@ public class MSecurePacker {
 		String randomKey = "";
 		
 		if (args.length < 2) {
-			System.err.println("[USAGE] [original dexfile path] [1:encryption or 2:decryption] [if decryption: key file path]");
-			System.err.println("ex) \"a.dex\" 1");
-			System.err.println("    \"b.dex\" 2 \"~.txt\"");
+			System.err.println("[USAGE] [original file path] [1:encryption or 2:decryption] [if decryption: key file path]");
+			System.err.println("ex) \"a.txt\" 1");
+			System.err.println("    \"b.txt\" 2 \"~.txt\"");
 			System.exit(1);
 		} 
 		

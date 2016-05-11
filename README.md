@@ -9,7 +9,7 @@ gradle 2.13 version download and add environment variable
 
 #Usage
 1. command line : gradle build -> MsecurePackerARIA.jar 생성
-2. command line : java -jar [build/libs/MsecurePackerARIA.jar] [original dexfile path] [1:encryption or 2:decryption] [if decryption: key file path]
+2. command line : java -jar [build/libs/MsecurePackerARIA.jar] [original file path] [1:encryption or 2:decryption] [if decryption: key file path]
 
 
 #Contact
