@@ -43,7 +43,7 @@ public class MSecureARIAPackerTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void firstTestFileToFile() {
 		File src = new File("src_test.txt");
 		File encryptedFile = new File("encrypted_test.txt");
@@ -128,7 +128,7 @@ public class MSecureARIAPackerTest {
 		assertTrue(src.isFile() && encryptedFile.isFile());
 	}
 	
-	@Test
+	//@Test
 	public void secondTestBigFile() {
 		File src = new File("src_test.txt");
 		File encryptedFile = new File("encrypted_test.txt");
@@ -202,7 +202,7 @@ public class MSecureARIAPackerTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void testEncrypteCorrectDefault() {
 		try {
 			for(int i=1;i<1000;i++) {
@@ -217,7 +217,7 @@ public class MSecureARIAPackerTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testEncryptCorrectBig() {
 		try {
 			String rndString = StringUtil.generateString(text, 32);
@@ -237,7 +237,7 @@ public class MSecureARIAPackerTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testIsDexFile() {
 		// true case
 		String fileName = "thisisTrue.dex";
@@ -256,7 +256,7 @@ public class MSecureARIAPackerTest {
 		assertFalse(MPackerEncrypt.isDexFile(fileName));
 	}
 	
-	@Test
+	//@Test
 	public void testAddPKC5Padding() {
 		byte[] testTrue = new byte[16];
 		testTrue[0] = 10; testTrue[1] = 10; testTrue[2] = 10; testTrue[3] = 10;
@@ -270,7 +270,7 @@ public class MSecureARIAPackerTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testDelPKC5Padding() {
 		byte[] paddingValue = new byte[]{10, 10, 10, 10, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12};
 		byte[] expected = new byte[4];
