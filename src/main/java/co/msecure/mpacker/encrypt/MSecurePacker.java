@@ -40,6 +40,8 @@ public class MSecurePacker {
 		
 		//arguments 
 		String originFullPath = args[0];
+		int ext_index = originFullPath.lastIndexOf(".");
+		String ext = originFullPath.substring(ext_index);	// extension
 		int selectEncDec = Integer.valueOf(args[1]);	// select encrypt or decrypt
 		
 		if(selectEncDec == 1) {
@@ -56,6 +58,7 @@ public class MSecurePacker {
 			String keyFile = args[2];
 			BufferedReader br = new BufferedReader(new FileReader(args[2]));
 			randomKey = br.readLine();
+			timestamp = br.readLine();
 		}
 		
 		
@@ -65,34 +68,39 @@ public class MSecurePacker {
 			System.err.println("[ERROR] File is Unreachable");
 			System.exit(1);
 		}
+		/*
 		if(!AndroidUtil.isDexFile(originFullPath)) {
 			System.err.println("[ERROR] input must be Dex File");
 			System.exit(1);
 		}
+		*/
+		
 		// 256 bit ARIA engine
 		packer.setARIAEngine(new ARIAEngine(256));
 		byte[] key = StringUtil.toBytes(randomKey, 16);
 	    packer.setKey(key);
-		
-		File f = new File(timestamp);
-		if(!f.mkdirs()) {
-			System.err.println("Directory creation fail");
-		}
-		
+	
+	    
 		// 1 : encrypt , 2 : decrypt
 		if (selectEncDec == 1) {
-			String targetFullPath = timestamp + "/EncryptedClasses.dex";
+			File f = new File(timestamp);
+			if(!f.mkdirs()) {
+				System.err.println("Directory creation fail");
+			}
+			String targetFullPath = timestamp + "/Encryptedfile"+ext;
 			File target = new File(targetFullPath);	
-			packer.encryptFileToFile(origin, target);		
+			packer.encryptFileToFile(origin, target);	
 			
 			//key°ª Ãâ·Â
 			BufferedWriter output = new BufferedWriter(new FileWriter(timestamp + "/key_value.txt"));
 			output.write(randomKey);
+			output.newLine();
+			output.write(timestamp);
 			output.close();
 		}
 		
 		else if (selectEncDec == 2) {
-			String targetFullPath = timestamp + "/DecryptedClasses.dex";
+			String targetFullPath = timestamp + "/Decryptedfile"+ext;
 			File target = new File(targetFullPath);			
 			packer.decryptFileToFile(origin, target);
 		}
