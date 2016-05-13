@@ -3,7 +3,7 @@
 
 # MSecurePackerARIA
 #####KISA에서 배포하는 ARIA 암호화 JAVA 운용 라이브러리 by M-secure
-#####ARIA Encryption Java Library from KISA by M-secure
+#####ARIA Encryption from KISA Java Library by M-secure
 #Setting
 gradle 2.13 version download and add environment variable
 
