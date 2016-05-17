@@ -31,33 +31,44 @@ public class MSecureARIAPacker {
 			e.printStackTrace();
 		}
 	}
-
-	public void decryptFileToFile(File origin, File target) 
+	
+	public void decryptStreamToFile(InputStream origin, File target) 
 			throws InvalidKeyException, IOException {
 		InputStream input = null;
 		OutputStream output = null;
 		try {
-			input = new BufferedInputStream(new FileInputStream(origin));
+			input = new BufferedInputStream(origin);
 			output = new BufferedOutputStream(new FileOutputStream(target));
 			
-			byte[] file = IOUtils.toByteArray(input);
-			byte[] decrypted = this.decrypt(file, 0, file.length);
-			output.write(decrypted);
-			output.flush();
-			/*
-			byte[] buffer = new byte[16];
-			int read = 0;
-			while (read != -1) {
-				read = input.read(buffer);
-				if(read == -1) {
-					byte[] last = this.delPKC5Padding(this.decryptDefault(buffer));
-					output.write(last);
-					break;
-				} else {
-					output.write(this.decryptDefault(buffer));
+			
+			int bufferSize = 1024;	// 1KB
+			int readLength;	// 읽은 Byte수
+			byte[] buf = new byte[bufferSize];
+			while((readLength = input.read(buf,0,bufferSize)) > 0) {	// 파일의 끝까지 읽는다.
+				
+				
+				if(readLength == 16){	// 마지막 문자열의 Byte수가 16Byte 일때
+					byte[] lastStringBuf = new byte[16];
+					System.arraycopy(buf, 0, lastStringBuf, 0, readLength); // 읽어온 Byte크기만큼 복사한다.
+					byte[] decrypted = this.decrypt(lastStringBuf, 0,readLength);	// 복호화 한 후
+					decrypted = this.delPKC5Padding(decrypted);	// 패딩을 제거한다.
+					output.write(decrypted);
+					
 				}
+				else if(readLength < 1024){	// 마지막 문자열의 Byte수가 1024Byte 미만 일때
+					byte[] lastStringBuf = new byte[readLength];
+					System.arraycopy(buf, 0, lastStringBuf, 0, readLength);
+					byte[] decrypted = this.decrypt(lastStringBuf, 0, readLength);
+					output.write(decrypted);
+				}
+				else{	// 1024Byte를 읽어서 복호화 한다.
+					byte[] decrypted = this.decrypt(buf, 0, readLength);
+					Arrays.fill(buf, (byte) 0);
+					output.write(decrypted);
+				}
+				output.flush();
+				
 			}
-			*/
 		} finally {
 			if (output != null) {
 				try { output.close(); } catch(IOException ie) {}
@@ -68,6 +79,101 @@ public class MSecureARIAPacker {
 		}
 	}
 
+	public void decryptFileToFile(File origin, File target) 
+			throws InvalidKeyException, IOException {
+		InputStream input = null;
+		OutputStream output = null;
+		try {
+			input = new BufferedInputStream(new FileInputStream(origin));
+			output = new BufferedOutputStream(new FileOutputStream(target));
+			
+			int bufferSize = 1024;	// 1KB
+			int readLength;	// 읽은 Byte수
+			byte[] buf = new byte[bufferSize];
+			while((readLength = input.read(buf,0,bufferSize)) > 0) {	// 파일의 끝까지 읽는다.
+				
+				
+				if(readLength == 16){	// 마지막 문자열의 Byte수가 16Byte 일때
+					byte[] lastStringBuf = new byte[16];
+					System.arraycopy(buf, 0, lastStringBuf, 0, readLength); // 읽어온 Byte크기만큼 복사한다.
+					byte[] decrypted = this.decrypt(lastStringBuf, 0,readLength);	// 복호화 한 후
+					decrypted = this.delPKC5Padding(decrypted);	// 패딩을 제거한다.
+					output.write(decrypted);
+					
+				}
+				else if(readLength < 1024){	// 마지막 문자열의 Byte수가 1024Byte 미만 일때
+					byte[] lastStringBuf = new byte[readLength];
+					System.arraycopy(buf, 0, lastStringBuf, 0, readLength);
+					byte[] decrypted = this.decrypt(lastStringBuf, 0, readLength);
+					output.write(decrypted);
+				}
+				else{	// 1024Byte를 읽어서 복호화 한다.
+					byte[] decrypted = this.decrypt(buf, 0, readLength);
+					Arrays.fill(buf, (byte) 0);
+					output.write(decrypted);
+				}
+				output.flush();
+				
+			}
+			
+		} finally {
+			if (output != null) {
+				try { output.close(); } catch(IOException ie) {}
+			}
+			if (input != null) {
+				try { input.close(); } catch(IOException ie) {}
+			}
+		}
+	}
+
+	public void encryptStreamToFile(InputStream origin, File target) 
+			throws InvalidKeyException, IOException {
+		OutputStream output = null;
+		InputStream input = null;
+		try {
+			input = new BufferedInputStream(origin);
+			output = new BufferedOutputStream(new FileOutputStream(target));
+			
+			
+			
+			int bufferSize = 1024;	// 1KB
+			int readLength;	// 읽은 Byte수
+			byte[] buf = new byte[bufferSize];
+			while((readLength = input.read(buf,0,bufferSize)) > 0) {	// 파일의 끝까지 읽는다.
+				
+				
+				if(readLength <16){	// 마지막 문자열의 Byte수가 16Byte 미만 일때
+					byte[] lastStringBuf = new byte[16];
+					System.arraycopy(buf, 0, lastStringBuf, 0, readLength); // 읽어온 Byte크기만큼 복사한다.
+					byte[] bufferWithPadding = this.addPKC5Padding(lastStringBuf, 0, readLength);	// PKCS패딩
+					byte[] encrypted = this.encrypt(bufferWithPadding, 0,readLength);
+					output.write(encrypted);
+					
+				}
+				else if(readLength < 1024){	// 마지막 문자열의 Byte수가 1024Byte 미만 일때
+					byte[] lastStringBuf = new byte[readLength];
+					System.arraycopy(buf, 0, lastStringBuf, 0, readLength);
+					byte[] encrypted = this.encrypt(lastStringBuf, 0, readLength);
+					output.write(encrypted);
+				}else{	// 1024Byte를 읽어서 암호화 한다.
+					byte[] encrypted = this.encrypt(buf, 0, readLength);
+					Arrays.fill(buf, (byte) 0);
+					output.write(encrypted);
+				}
+				output.flush();
+				
+			}
+			
+		} finally {
+			if (output != null) {
+				try { output.close(); } catch(IOException ie) {}
+			}
+			if (input != null) {
+				try { input.close(); } catch(IOException ie) {}
+			}
+		}
+	}
+	
 	public void encryptFileToFile(File origin, File target) 
 			throws InvalidKeyException, IOException {
 		InputStream input = null;

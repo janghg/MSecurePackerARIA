@@ -7,9 +7,11 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Random;
@@ -21,6 +23,8 @@ import co.msecure.util.StringUtil;
 public class MSecurePacker {
 	public static void main(String[] args) throws Exception {
 		MSecureARIAPacker packer = new MSecureARIAPacker();
+		
+		InputStream input = new FileInputStream(args[0]);
 		
 		//Time stamp값 생성
 	    Calendar cal = Calendar.getInstance( );
@@ -37,6 +41,7 @@ public class MSecurePacker {
 			System.err.println("    \"b.txt\" 2 \"~.txt\"");
 			System.exit(1);
 		} 
+		
 		
 		//arguments 
 		String originFullPath = args[0];
@@ -89,6 +94,7 @@ public class MSecurePacker {
 			}
 			String targetFullPath = timestamp + "/Encryptedfile"+ext;
 			File target = new File(targetFullPath);	
+			//packer.encryptStreamToFile(input, target);
 			packer.encryptFileToFile(origin, target);	
 			
 			//key값 출력
@@ -102,6 +108,7 @@ public class MSecurePacker {
 		else if (selectEncDec == 2) {
 			String targetFullPath = timestamp + "/Decryptedfile"+ext;
 			File target = new File(targetFullPath);			
+			//packer.decryptStreamToFile(input, target);
 			packer.decryptFileToFile(origin, target);
 		}
 	}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="encrypt.MPackerEncryptTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2016-05-11T06:41:58" hostname="JangHyeongGon" time="0.004">
+<testsuite name="encrypt.MPackerEncryptTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2016-05-17T07:16:22" hostname="JangHyeongGon" time="0.006">
   <properties/>
-  <testcase name="testIsDexFile" classname="encrypt.MPackerEncryptTest" time="0.004"/>
+  <testcase name="testIsDexFile" classname="encrypt.MPackerEncryptTest" time="0.006"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

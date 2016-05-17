@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.InvalidKeyException;
 import java.util.Arrays;
@@ -42,6 +43,95 @@ public class MSecureARIAPackerTest {
 			fail("Packer Create Fail");
 		}
 	}
+	
+		//@Test
+		public void firstTestStreamToFile() {
+			File src = new File("src_test.txt");
+			File encryptedFile = new File("encrypted_test.txt");
+			File decryptedFile = new File("decrypted_test.txt");
+			
+			for(int i=0;i<1000;i++) {
+				
+				if(i % 250 == 0) {
+					System.out.println(i);
+				}
+				
+				String rndString = StringUtil.generateString(text, NumberUtil.getRandomIntBetween(0, 999999));
+				OutputStream output = null;
+				try {
+					
+					
+					output = new BufferedOutputStream(new FileOutputStream(src));
+					byte[] writing = rndString.getBytes();
+					output.write(writing, 0, writing.length);
+					output.flush();
+					output.close();
+					output = null;
+					
+					
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					
+				} finally {
+					if (output != null) {
+						try { output.close(); } catch(IOException ie) {}
+					}
+				}
+				try {
+					InputStream input = new FileInputStream(src);
+					packer.encryptStreamToFile(input, encryptedFile);
+					
+					try {
+						//create object of BufferedInputStream
+				        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(encryptedFile));
+				        
+				        
+				        
+				        Long size = encryptedFile.length();
+				        byte[] file = IOUtils.toByteArray(bin);
+				        byte[] decrypted = packer.decrypt(file, 0, file.length);
+				        
+				        String decryptedString = new String(decrypted, 0, decrypted.length);
+				        //System.out.println(decryptedString.replace(rndString, ""));
+				        assertEquals(rndString, new String(decrypted, 0, decrypted.length));
+				        
+				        bin.close();
+					} catch (IOException e) {
+						fail("check");
+					} finally {
+						
+					}
+				} catch (InvalidKeyException | IOException e) {
+					fail("encryptFileToFile");
+				}
+				
+				try {	
+					InputStream tempFile = new FileInputStream(encryptedFile);
+					//packer.decryptStreamToFile(tempFile, decryptedFile);
+					packer.decryptFileToFile(encryptedFile, decryptedFile);
+					
+					//create object of BufferedInputStream
+			        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(decryptedFile));
+			        byte[] file = IOUtils.toByteArray(bin);
+			        
+			        String decryptedString = new String(file, 0, file.length);
+			        //System.out.println(decryptedString.replace(rndString, ""));
+			        assertEquals(rndString, decryptedString);
+			        
+			        bin.close();
+				} catch (IOException e) {
+					fail("check");
+				} catch (InvalidKeyException e) {
+					fail("InvalidKeyException");
+				} finally {
+					
+				}
+			}
+				
+			assertTrue(src.isFile() && encryptedFile.isFile());
+		}
+		
 	
 	//@Test
 	public void firstTestFileToFile() {
